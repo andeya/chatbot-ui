@@ -21,6 +21,8 @@ export const usePromptAndCommand = () => {
     setUseRetrieval,
     setToolCommand,
     setIsToolPickerOpen,
+    setIsSearchPickerOpen,
+    setSearchCommand,
     setSelectedTools,
     setAtCommand,
     setIsAssistantPickerOpen,
@@ -34,10 +36,12 @@ export const usePromptAndCommand = () => {
     const slashTextRegex = /\/([^ ]*)$/
     const hashtagTextRegex = /#([^ ]*)$/
     const toolTextRegex = /!([^ ]*)$/
+    const searchTextRegex = /\? (.*)/
     const atMatch = value.match(atTextRegex)
     const slashMatch = value.match(slashTextRegex)
     const hashtagMatch = value.match(hashtagTextRegex)
     const toolMatch = value.match(toolTextRegex)
+    const searchMatch = value.match(searchTextRegex)
 
     if (atMatch) {
       setIsAssistantPickerOpen(true)
@@ -51,14 +55,19 @@ export const usePromptAndCommand = () => {
     } else if (toolMatch) {
       setIsToolPickerOpen(true)
       setToolCommand(toolMatch[1])
+    } else if (searchMatch) {
+      setIsSearchPickerOpen(true)
+      setSearchCommand(searchMatch[1])
     } else {
       setIsPromptPickerOpen(false)
       setIsFilePickerOpen(false)
       setIsToolPickerOpen(false)
+      setIsSearchPickerOpen(false)
       setIsAssistantPickerOpen(false)
       setSlashCommand("")
       setHashtagCommand("")
       setToolCommand("")
+      setSearchCommand("")
       setAtCommand("")
     }
 
@@ -134,6 +143,11 @@ export const usePromptAndCommand = () => {
     setSelectedTools(prev => [...prev, tool])
   }
 
+  const handleSearch = () => {
+    setIsSearchPickerOpen(false)
+    setUserInput(userInput.replace(/\?[^ ]*$/, ""))
+  }
+
   const handleSelectAssistant = async (assistant: Tables<"assistants">) => {
     setIsAssistantPickerOpen(false)
     setUserInput(userInput.replace(/@[^ ]*$/, ""))
@@ -185,6 +199,7 @@ export const usePromptAndCommand = () => {
     handleSelectUserFile,
     handleSelectUserCollection,
     handleSelectTool,
+    handleSearch,
     handleSelectAssistant
   }
 }

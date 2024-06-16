@@ -101,6 +101,8 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
   const [hashtagCommand, setHashtagCommand] = useState("")
   const [isToolPickerOpen, setIsToolPickerOpen] = useState(false)
   const [toolCommand, setToolCommand] = useState("")
+  const [isSearchPickerOpen, setIsSearchPickerOpen] = useState(false)
+  const [searchCommand, setSearchCommand] = useState("")
   const [focusPrompt, setFocusPrompt] = useState(false)
   const [focusFile, setFocusFile] = useState(false)
   const [focusTool, setFocusTool] = useState(false)
@@ -122,6 +124,9 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
   // TOOL STORE
   const [selectedTools, setSelectedTools] = useState<Tables<"tools">[]>([])
   const [toolInUse, setToolInUse] = useState<string>("none")
+
+  // search
+  const [searchInUse, setSearchInUse] = useState<string>("none")
 
   useEffect(() => {
     ;(async () => {
@@ -287,6 +292,10 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
         setIsToolPickerOpen,
         toolCommand,
         setToolCommand,
+        isSearchPickerOpen,
+        setIsSearchPickerOpen,
+        searchCommand,
+        setSearchCommand,
         focusPrompt,
         setFocusPrompt,
         focusFile,
@@ -322,7 +331,11 @@ export const GlobalState: FC<GlobalStateProps> = ({ children }) => {
         selectedTools,
         setSelectedTools,
         toolInUse,
-        setToolInUse
+        setToolInUse,
+
+        // search
+        searchInUse,
+        setSearchInUse
       }}
     >
       {children}

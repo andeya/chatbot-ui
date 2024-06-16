@@ -21,6 +21,7 @@ import {
   processResponse,
   validateChatSettings
 } from "../chat-helpers"
+import searchHandle from "./search"
 
 export const useChatHandler = () => {
   const router = useRouter()
@@ -56,10 +57,14 @@ export const useChatHandler = () => {
     chatFileItems,
     setChatFileItems,
     setToolInUse,
+    searchInUse,
+    setSearchInUse,
+    searchCommand,
     useRetrieval,
     sourceCount,
     setIsPromptPickerOpen,
     setIsFilePickerOpen,
+    setIsSearchPickerOpen,
     selectedTools,
     selectedPreset,
     setChatSettings,
@@ -95,6 +100,7 @@ export const useChatHandler = () => {
     setShowFilesDisplay(false)
     setIsPromptPickerOpen(false)
     setIsFilePickerOpen(false)
+    setIsSearchPickerOpen(false)
 
     setSelectedTools([])
     setToolInUse("none")
@@ -183,6 +189,7 @@ export const useChatHandler = () => {
   }
 
   const handleStopMessage = () => {
+    setSearchInUse("none")
     if (abortController) {
       abortController.abort()
     }
@@ -200,6 +207,7 @@ export const useChatHandler = () => {
       setIsGenerating(true)
       setIsPromptPickerOpen(false)
       setIsFilePickerOpen(false)
+      setIsSearchPickerOpen(false)
       setNewMessageImages([])
 
       const newAbortController = new AbortController()
@@ -259,12 +267,27 @@ export const useChatHandler = () => {
           selectedAssistant
         )
 
+      let currentChatMessages = tempUserChatMessage
+      // Get results from search engines
+      if (searchInUse != "none") {
+        console.log("searchCommand:", searchCommand)
+        currentChatMessages = JSON.parse(JSON.stringify(tempUserChatMessage))
+        currentChatMessages.message.content = await searchHandle(searchCommand)
+        console.log(
+          "raw messageContent:",
+          tempUserChatMessage.message.content,
+          "\nsearch messageContent:",
+          currentChatMessages.message.content
+        )
+        setSearchInUse("none")
+      }
+
       let payload: ChatPayload = {
         chatSettings: chatSettings!,
         workspaceInstructions: selectedWorkspace!.instructions || "",
         chatMessages: isRegeneration
           ? [...chatMessages]
-          : [...chatMessages, tempUserChatMessage],
+          : [...chatMessages, currentChatMessages],
         assistant: selectedChat?.assistant_id ? selectedAssistant : null,
         messageFileItems: retrievedFileItems,
         chatFileItems: chatFileItems
@@ -407,6 +430,10 @@ export const useChatHandler = () => {
 
     setChatMessages(filteredMessages)
 
+    console.log("editedContent:", JSON.stringify(editedContent))
+    if (editedContent.startsWith("? ")) {
+      setSearchInUse("google")
+    }
     handleSendMessage(editedContent, filteredMessages, false)
   }
 

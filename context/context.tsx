@@ -100,6 +100,10 @@ interface ChatbotUIContext {
   setIsToolPickerOpen: Dispatch<SetStateAction<boolean>>
   toolCommand: string
   setToolCommand: Dispatch<SetStateAction<string>>
+  isSearchPickerOpen: boolean
+  setIsSearchPickerOpen: Dispatch<SetStateAction<boolean>>
+  searchCommand: string
+  setSearchCommand: Dispatch<SetStateAction<string>>
   focusPrompt: boolean
   setFocusPrompt: Dispatch<SetStateAction<boolean>>
   focusFile: boolean
@@ -136,6 +140,10 @@ interface ChatbotUIContext {
   setSelectedTools: Dispatch<SetStateAction<Tables<"tools">[]>>
   toolInUse: string
   setToolInUse: Dispatch<SetStateAction<string>>
+
+  // search
+  searchInUse: string
+  setSearchInUse: Dispatch<SetStateAction<string>>
 }
 
 export const ChatbotUIContext = createContext<ChatbotUIContext>({
@@ -226,6 +234,10 @@ export const ChatbotUIContext = createContext<ChatbotUIContext>({
   setIsToolPickerOpen: () => {},
   toolCommand: "",
   setToolCommand: () => {},
+  isSearchPickerOpen: false,
+  setIsSearchPickerOpen: () => {},
+  searchCommand: "",
+  setSearchCommand: () => {},
   focusPrompt: false,
   setFocusPrompt: () => {},
   focusFile: false,
@@ -261,5 +273,9 @@ export const ChatbotUIContext = createContext<ChatbotUIContext>({
   selectedTools: [],
   setSelectedTools: () => {},
   toolInUse: "none",
-  setToolInUse: () => {}
+  setToolInUse: () => {},
+
+  // search
+  searchInUse: "none",
+  setSearchInUse: () => {}
 })
